@@ -1,0 +1,7 @@
+# Ignore VS Code folder
+.vscode
+
+# Ignore compiled programs
+*.exe
+*.out
+*.o
