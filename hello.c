@@ -1,8 +1,12 @@
-/* Hello world program */
+// /* Hello world program */
 
-#include <stdio.h>
+// #include <stdio.h>
 
-int main(void)
-{
-    printf("Hello, World!\n");  // Actually do the work here
-}
+// int main(void)
+// {
+//     int i = 2;
+//     float f = 3.14;
+//     char *s = "Hello world!";
+
+//     printf("%s  i = %d and f = %f!\n", s, i, f);  // Actually do the work here
+// }
