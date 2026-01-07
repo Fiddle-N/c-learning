@@ -10,3 +10,4 @@
 
 //     printf("%s  i = %d and f = %f!\n", s, i, f);  // Actually do the work here
 // }
+void dummy(void) {}
