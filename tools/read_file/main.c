@@ -10,5 +10,5 @@ int main(void) {
         return 1;
     }
     printf("%s", read_line_res.line);
-    free(read_line_res.line);
+    read_line_free(&read_line_res);
 }
