@@ -1,6 +1,6 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Wpedantic -std=c23 -Ilib/utils
+CFLAGS := -Wall -Wextra -Wpedantic -Werror -std=c23 -Ilib/utils
 LDFLAGS :=
 
 # Directories
