@@ -5,10 +5,12 @@
 #define FILE_PATH "data/text_file.txt"
 
 int main(void) {
-    read_line_result read_line_res = read_line(FILE_PATH);
-    if (read_line_res.status != 0) {
+    read_file_result read_file_res = read_file(FILE_PATH);
+    if (read_file_res.status != 0) {
         return 1;
     }
-    printf("%s", read_line_res.line);
-    read_line_free(&read_line_res);
+    for (char **p = read_file_res.text; *p != NULL; p++) {
+        printf("%s", *p);
+    }
+    read_file_free(&read_file_res);
 }

@@ -1,19 +1,19 @@
 #pragma once
 
 typedef enum {
-    READ_LINE_OK,
-    READ_LINE_ERR_NULL_PATH,
-    READ_LINE_ERR_INVALID_FILE,
-    READ_LINE_ERR_OOM,
-    READ_LINE_ERR_READ,
-} read_line_status;
+    READ_FILE_OK,
+    READ_FILE_ERR_NULL_PATH,
+    READ_FILE_ERR_INVALID_FILE,
+    READ_FILE_ERR_OOM,
+    READ_FILE_ERR_READ,
+} read_file_status;
 
 
 typedef struct {
-    read_line_status status;
-    char *line;
-} read_line_result;
+    read_file_status status;
+    char **text;
+} read_file_result;
 
-read_line_result read_line(const char *path);
-void read_line_free(read_line_result *res);
+read_file_result read_file(const char *path);
+void read_file_free(read_file_result *res);
 void hello_world_lib(void);

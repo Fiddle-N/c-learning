@@ -3,42 +3,71 @@
 #include "utils.h"
 
 
-// returns the first line from the file as a pointer
-// don't forget to free the pointer!
-read_line_result read_line(const char *path) {
+// returns the first two lines of a file
+read_file_result read_file(const char *path) {
     FILE *fp;
-    size_t bufsize = 1024;
+    size_t line_size = 1024;
+    // size_t line_num_size = 10000;
 
     if (path == NULL) {
-        return (read_line_result){READ_LINE_ERR_NULL_PATH, NULL};
+        return (read_file_result){READ_FILE_ERR_NULL_PATH, NULL};
     }
 
     fp = fopen(path, "r");
     if (fp == NULL) {
-        return (read_line_result){READ_LINE_ERR_INVALID_FILE, NULL};
+        return (read_file_result){READ_FILE_ERR_INVALID_FILE, NULL};
     }
 
-    char *line_p = malloc(bufsize);
+    // first line
+    char *line_p = malloc(line_size);
     if (line_p == NULL) {
         fclose(fp);
-        return (read_line_result){READ_LINE_ERR_OOM, NULL};
+        return (read_file_result){READ_FILE_ERR_OOM, NULL};
     }
-    fgets(line_p, (int)bufsize, fp);
-    if (line_p == NULL) {
+    if (fgets(line_p, (int)line_size, fp) == NULL) {
         free(line_p);
         fclose(fp);
-        return (read_line_result){READ_LINE_ERR_READ, NULL};
+        return (read_file_result){READ_FILE_ERR_READ, NULL};
     }
+
+    // second line
+    char *line_p_2 = malloc(line_size);
+    if (line_p_2 == NULL) {
+        fclose(fp);
+        return (read_file_result){READ_FILE_ERR_OOM, NULL};
+    }
+    if (fgets(line_p_2, (int)line_size, fp) == NULL) {
+        free(line_p_2);
+        fclose(fp);
+        return (read_file_result){READ_FILE_ERR_READ, NULL};
+    }
+
+    // assemble two lines into outer pointer
+    char **text = calloc(3, sizeof *text);    // two lines plus a null
+    *text = line_p;
+    text++;
+    *text = line_p_2;
+    text++;
+    *text = NULL;
+    text--;text--;  // walk back to original pointer location
+
+
     fclose(fp);
-    return (read_line_result){READ_LINE_OK, line_p};
+    return (read_file_result){READ_FILE_OK, text};
 }
 
-void read_line_free(read_line_result *res) {
+void read_file_free(read_file_result *res) {
     if (res == NULL) {
         return;
     }
-    free(res->line);
-    res->line = NULL;   // prevent double free error
+    free(*(res->text));
+    res->text++;
+    free(*(res->text));
+    // no need to autoincrement again to free null pointer
+    res->text--;
+
+    free(res->text);
+    res->text = NULL;   // prevent double free error
 }
 
 void hello_world_lib(void) {
