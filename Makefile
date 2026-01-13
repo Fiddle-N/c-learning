@@ -1,7 +1,7 @@
 # Compiler and flags
 CC := gcc
-CFLAGS := -Wall -Wextra -Wpedantic -Werror -std=c23 -Ilib/utils
-LDFLAGS :=
+CFLAGS := -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -std=c23 -Ilib/utils
+LDFLAGS := -fsanitize=address,undefined
 
 # Directories
 BUILD := build
