@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include "utils.h"
 
@@ -69,6 +70,16 @@ read_file_result read_file(const char *path) {
         if (line_no >= file_size) {
             // gone over file line limit - unwind and close file
             status = READ_FILE_ERR_FILE_TOO_LARGE;
+            break;
+        }
+
+        if (
+            (strlen(line_p) == line_size)
+            && *(line_p + line_size - 1) != '\n'
+        ) {
+            // gone over line limit - unwind and close file
+            // TODO refactor to not rescan line
+            status = READ_FILE_ERR_LINE_TOO_LARGE;
             break;
         }
 
