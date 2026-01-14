@@ -45,8 +45,8 @@ read_file_result read_file(const char *path) {
     char **text_start = text;
     size_t line_no = 0;
     while (1) {
-        char *line_pointer = calloc(line_size + 1, sizeof(char));           // add one for null terminator
-        if (line_pointer == NULL) {
+        char *line_p = calloc(line_size + 1, sizeof(char));           // add one for null terminator
+        if (line_p == NULL) {
             // out of memory - unwind and close file
             *text = NULL;
             _read_file_free(text_start);
@@ -54,10 +54,10 @@ read_file_result read_file(const char *path) {
             return (read_file_result){READ_FILE_ERR_OOM, NULL};
         }
 
-        if (fgets(line_pointer, (int)line_size + 1, fp) == NULL) {
+        if (fgets(line_p, (int)line_size + 1, fp) == NULL) {
             if (ferror(fp)) {
                 // read error
-                free(line_pointer);
+                free(line_p);
                 *text = NULL;
                 _read_file_free(text_start);
                 fclose(fp);
@@ -65,13 +65,13 @@ read_file_result read_file(const char *path) {
             }
             // EOF
             assert(feof(fp));
-            free(line_pointer);  // this is no longer needed
+            free(line_p);  // this is no longer needed
             break;
         }
         
         if (line_no >= file_size) {
             // gone over file line limit - unwind and close file
-            free(line_pointer);
+            free(line_p);
             *text = NULL;
             _read_file_free(text_start);
             fclose(fp);
@@ -80,7 +80,7 @@ read_file_result read_file(const char *path) {
 
         // TODO check if line is too large
         // implementation currently splits long lines across multiple pointers
-        *text = line_pointer;
+        *text = line_p;
         text++;
         line_no++;
     }
