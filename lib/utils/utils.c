@@ -42,51 +42,53 @@ read_file_result read_file(const char *path) {
     }
 
     size_t line_size = 1024;
-    char **text_start = text;
+    char **text_cursor = text;
     size_t line_no = 0;
+    char *line_p = NULL;
+    read_file_status status = READ_FILE_ERR_UNEXPECTED;
     while (1) {
-        char *line_p = calloc(line_size + 1, sizeof(char));           // add one for null terminator
+        line_p = calloc(line_size + 1, sizeof(char));           // add one for null terminator
         if (line_p == NULL) {
             // out of memory - unwind and close file
-            *text = NULL;
-            _read_file_free(text_start);
-            fclose(fp);
-            return (read_file_result){READ_FILE_ERR_OOM, NULL};
+            status = READ_FILE_ERR_OOM;
+            break;
         }
 
-        if (fgets(line_p, (int)line_size + 1, fp) == NULL) {
+        if ((fgets(line_p, (int)line_size + 1, fp)) == NULL) {
             if (ferror(fp)) {
                 // read error
-                free(line_p);
-                *text = NULL;
-                _read_file_free(text_start);
-                fclose(fp);
-                return (read_file_result){READ_FILE_ERR_READ, NULL};
+                status = READ_FILE_ERR_READ;
+                break;
             }
             // EOF
             assert(feof(fp));
-            free(line_p);  // this is no longer needed
+            status = READ_FILE_OK;
             break;
         }
         
         if (line_no >= file_size) {
             // gone over file line limit - unwind and close file
-            free(line_p);
-            *text = NULL;
-            _read_file_free(text_start);
-            fclose(fp);
-            return (read_file_result){READ_FILE_ERR_FILE_TOO_LARGE, NULL};
+            status = READ_FILE_ERR_FILE_TOO_LARGE;
+            break;
         }
 
         // TODO check if line is too large
         // implementation currently splits long lines across multiple pointers
-        *text = line_p;
-        text++;
+        *text_cursor = line_p;
+        text_cursor++;
         line_no++;
     }
-    *text = NULL;
+
+    // cleanup
+    free(line_p);
+    *text_cursor = NULL;
     fclose(fp);
-    return (read_file_result){READ_FILE_OK, text_start};
+    if (status != READ_FILE_OK) {
+        _read_file_free(text);
+        text = NULL;
+    }
+
+    return (read_file_result){status, text};
 }
 
 
