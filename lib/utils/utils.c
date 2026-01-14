@@ -5,15 +5,13 @@
 
 
 static void _read_file_free(char **text) {
-    char **text_start = text;
-    while (1) {
-        if (*text == NULL) {
-            break;
-        }
-        free(*text);
-        text++;
+    if (text == NULL) {
+        return;
     }
-    free(text_start);
+    for (char **text_p = text; *text_p != NULL; text_p++) {
+        free(*text_p);
+    }
+    free(text);
 }
 
 
