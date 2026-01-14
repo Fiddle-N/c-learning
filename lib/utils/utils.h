@@ -6,6 +6,8 @@ typedef enum {
     READ_FILE_ERR_INVALID_FILE,
     READ_FILE_ERR_OOM,
     READ_FILE_ERR_READ,
+    READ_FILE_ERR_LINE_TOO_LARGE,
+    READ_FILE_ERR_FILE_TOO_LARGE,
 } read_file_status;
 
 
